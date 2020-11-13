@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { playAudio } from "../util";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faPlay,
@@ -19,6 +20,7 @@ const Player = ({
   setSongs,
 }) => {
   //UseEffects
+  //Changes the active value when changing the song through the song skip buttons.
   useEffect(() => {
     const newSongs = songs.map((song) => {
       if (song.id === currentSong.id) {
@@ -34,7 +36,7 @@ const Player = ({
       } //eoElse
     });
     setSongs(newSongs);
-  },[currentSong]);
+  }, [currentSong]);
 
   //Event Handlers
   const playSongHandler = () => {
@@ -72,10 +74,14 @@ const Player = ({
       //if we are at index 0 | return is to prevent the setCurrentSong out of the If doesnt run. could add an else to the if and remove the return. same thing.
       if ((currentIndex - 1) % songs.length === -1) {
         setCurrentSong(songs[songs.length - 1]);
+        //added bc of the return
+        playAudio(isPlaying, audioRef);
         return;
       }
       setCurrentSong(songs[(currentIndex - 1) % songs.length]);
     }
+    //plays song audio after skip
+    playAudio(isPlaying, audioRef);
   }; //eoskipTrackHandler
 
   return (
@@ -89,7 +95,7 @@ const Player = ({
           onChange={dragHandler}
           type="range"
         />
-        <p>{getTime(songInfo.duration)}</p>
+        <p>{songInfo.duration ? getTime(songInfo.duration) : "0:00"}</p>
       </div>
       <div className="play-control">
         <FontAwesomeIcon

@@ -1,5 +1,5 @@
 import React from "react";
-
+import { playAudio } from "../util";
 const LibrarySong = ({
   song,
   allSongs,
@@ -27,18 +27,10 @@ const LibrarySong = ({
       } //eoElse
     }); //eoSongSelectHandler
     setSongs(newSongs);
-
-    //this is for song changes, waits until song is loaded then plays
-    //song wouldnt play on song change without this bc it was trying to play before song load.
-    if (isPlaying) {
-      const playPromise = audioRef.current.play();
-      if (playPromise !== undefined) {
-        playPromise.then((audio) => {
-          audioRef.current.play();
-        });
-      }
-    }
   };
+
+  //to play the audio, calls function in util.js
+  playAudio(isPlaying, audioRef);
 
   return (
     <div
