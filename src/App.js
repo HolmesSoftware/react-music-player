@@ -9,6 +9,19 @@ import Nav from "./components/Nav";
 function App() {
   //Ref / grabing a html elememnt
   const audioRef = useRef(null);
+  const requestRef = useRef();
+
+  //State
+  const [songs, setSongs] = useState(data());
+  const [currentSong, setCurrentSong] = useState(songs[0]);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [animationPercent, setAnimationPercent] = useState(0);
+  //Set the current song infomation
+  const [songInfo, setSongInfo] = useState({
+    currentTime: 0,
+    duration: 0,
+  });
+  const [libraryStatus, setLibraryStatus] = useState(false);
 
   //this is taking the current time from the event on the audio tag
   //uses onTimeUpdate on the audio tag to send updated metadata whenever the audio changes
@@ -16,19 +29,19 @@ function App() {
   const timeUpdateHandler = (e) => {
     const current = e.target.currentTime;
     const duration = e.target.duration;
-    setSongInfo({ ...songInfo, currentTime: current, duration: duration });
+    //calculate percentage
+    setAnimationPercent((current / duration) * 100);
+    // const roundedCurrent = Math.round(current);
+    // const roundedDuration = Math.round(duration);
+    // const animationPercentage = Math.round(
+    //   (roundedCurrent / roundedDuration) * 100
+    // );
+    setSongInfo({
+      ...songInfo,
+      currentTime: current,
+      duration: duration,
+    });
   };
-
-  //State
-  const [songs, setSongs] = useState(data());
-  const [currentSong, setCurrentSong] = useState(songs[0]);
-  const [isPlaying, setIsPlaying] = useState(false);
-  //Set the current song infomation
-  const [songInfo, setSongInfo] = useState({
-    currentTime: 0,
-    duration: 0,
-  });
-  const [libraryStatus, setLibraryStatus] = useState(false);
 
   return (
     <div className="App">
@@ -44,6 +57,8 @@ function App() {
         songs={songs}
         setCurrentSong={setCurrentSong}
         setSongs={setSongs}
+        animationPercent={animationPercent}
+        requestRef={requestRef}
       />
       <Library
         songs={songs}

@@ -11,10 +11,12 @@
   display: flex;
   input {
     width: 100%;
-    padding: 1rem 0rem;
+    -webkit-appearance: none;
+    background-color: transparent;
+    cursor: pointer;
   }
   p {
-    padding: 1rem;
+    padding: 0 1rem;
   }
 }
 
@@ -27,4 +29,39 @@
   svg {
     cursor: pointer;
   }
+}
+
+input[type="range"]:focus {
+  outline: none;
+}
+input[type="range"]::-webkit-slider-thumb {
+  appearance: none;
+  height: 16px;
+  width: 16px;
+}
+
+.track {
+  background: lightblue;
+  width: 100%;
+  height: 1rem;
+  position: relative;
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+// div covers entire track and the moves left with the song using .js styling
+// overflow hidden on container to deal with, well overflow duh.
+.animate-track {
+  background: rgb(204, 204, 204);
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translateX(0%);
+  -moz-transform: translateX(0%); /* Firefox 4 */
+  -webkit-transform: translateX(0%); /* Safari and Chrome */
+  -o-transform: translateX(0%); /* Opera */
+  -ms-transform: translateX(0%); /* Explorer 10 */
+  pointer-events: none;
 }
