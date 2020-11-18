@@ -1,5 +1,4 @@
-import React, { useEffect, useLayoutEffect, useState } from "react";
-import { playAudio } from "../util";
+import React, { useLayoutEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faPlay,
@@ -21,11 +20,11 @@ const Player = ({
   animationPercent,
   requestRef,
 }) => {
-  //UseEffects
+  //Event Handlers
   //Changes the active value when changing the song through the song skip buttons.
-  useEffect(() => {
+  const activeLibraryHandler = (nextOrPrev) => {
     const newSongs = songs.map((song) => {
-      if (song.id === currentSong.id) {
+      if (song.id === nextOrPrev.id) {
         return {
           ...song,
           active: true,
@@ -38,9 +37,8 @@ const Player = ({
       } //eoElse
     });
     setSongs(newSongs);
-  }, [currentSong]);
+  };
 
-  //Event Handlers
   const playSongHandler = () => {
     if (isPlaying) {
       audioRef.current.pause();
@@ -67,23 +65,24 @@ const Player = ({
 
   //pulling the index from the array of objects to know which song is next and which one was last
   // makes sure the index doesnt go bigger or smaller than whats avalible
-  const skipTrackHandler = (direction) => {
+  const skipTrackHandler = async (direction) => {
     let currentIndex = songs.findIndex((song) => song.id === currentSong.id);
 
     if (direction === "skip-forward") {
-      setCurrentSong(songs[(currentIndex + 1) % songs.length]);
+      await setCurrentSong(songs[(currentIndex + 1) % songs.length]);
+      activeLibraryHandler(songs[(currentIndex + 1) % songs.length]);
     } else if (direction === "skip-back") {
       //if we are at index 0 | return is to prevent the setCurrentSong out of the If doesnt run. could add an else to the if and remove the return. same thing.
       if ((currentIndex - 1) % songs.length === -1) {
-        setCurrentSong(songs[songs.length - 1]);
-        //added bc of the return
-        playAudio(isPlaying, audioRef);
+        await setCurrentSong(songs[songs.length - 1]);
+        activeLibraryHandler(songs[songs.length - 1]);
+        if (isPlaying) audioRef.current.play();
         return;
       }
-      setCurrentSong(songs[(currentIndex - 1) % songs.length]);
+      await setCurrentSong(songs[(currentIndex - 1) % songs.length]);
+      activeLibraryHandler(songs[(currentIndex - 1) % songs.length]);
     }
-    //plays song audio after skip
-    playAudio(isPlaying, audioRef);
+    if (isPlaying) audioRef.current.play();
   }; //eoskipTrackHandler
 
   //this is for the animation on the time display/track

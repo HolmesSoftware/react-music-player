@@ -1,7 +1,7 @@
 .library {
   position: fixed;
   top: 0;
-  bottom: 0;
+  left: 0;
   width: 30rem;
   height: 100%;
   background-color: white;
@@ -24,6 +24,13 @@
   align-items: center;
   padding: 1rem 2rem;
   cursor: pointer;
+
+  transition: background 0.3s ease;
+  -moz-transition: background 0.3s ease; /* Firefox 4 */
+  -webkit-transition: background 0.3s ease; /* Safari and Chrome */
+  -o-transition: background 0.3s ease; /* Opera */
+  -ms-transition: background 0.3s ease; /* Explorer 10 */
+
   img {
     width: 30%;
   }
@@ -71,4 +78,10 @@
   -ms-transform: translateX(0%); /* Explorer 10 */
 
   opacity: 1;
+}
+
+@media screen and (max-width: 768px) {
+  .library {
+    width: 100%;
+  }
 }

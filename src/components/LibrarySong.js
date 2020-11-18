@@ -1,5 +1,4 @@
 import React from "react";
-import { playAudio } from "../util";
 const LibrarySong = ({
   song,
   allSongs,
@@ -10,8 +9,8 @@ const LibrarySong = ({
   setSongs,
 }) => {
   //sets song baised on which one is clicked on, updates Active state
-  const songSelectHandler = () => {
-    setCurrentSong(song);
+  const songSelectHandler = async () => {
+    await setCurrentSong(song);
     //this is checking to see which song is selected and changing the active to true or false baised on if its been selected or not.
     const newSongs = allSongs.map((song) => {
       if (song.id === id) {
@@ -30,7 +29,7 @@ const LibrarySong = ({
   };
 
   //to play the audio, calls function in util.js
-  playAudio(isPlaying, audioRef);
+  if (isPlaying) audioRef.current.play();
 
   return (
     <div
