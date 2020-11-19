@@ -130,19 +130,6 @@ const Player = ({
 
   return (
     <div className="player">
-      <div className="volume-control">
-        <div
-          style={{
-            background: `linear-gradient(to right, ${currentSong.color[0]}, ${currentSong.color[1]})`,
-          }}
-          className="volume"
-        >
-          <input min={0} max={100} type="range" onChange={volumeLevelHandler} />
-          <div style={volumeStyleTransform} className="animate-volume"></div>
-        </div>
-        <FontAwesomeIcon icon={faVolumeUp} size="2x" className="volume-icon" />
-      </div>
-
       <div className="time-control">
         <p>{getTime(songInfo.currentTime)}</p>
         <div
@@ -181,6 +168,27 @@ const Player = ({
           size="2x"
           icon={faAngleRight}
         />
+        <div className="volume-control">
+          <div
+            style={{
+              background: `linear-gradient(to right, ${currentSong.color[0]}, ${currentSong.color[1]})`,
+            }}
+            className="volume"
+          >
+            <input
+              min={0}
+              max={100}
+              type="range"
+              onChange={volumeLevelHandler}
+            />
+            <div style={volumeStyleTransform} className="animate-volume"></div>
+          </div>
+          <FontAwesomeIcon
+            icon={faVolumeUp}
+            size="2x"
+            className="volume-icon"
+          />
+        </div>
       </div>
     </div>
   );
