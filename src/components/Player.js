@@ -6,7 +6,6 @@ import {
   faAngleRight,
   faPause,
   faVolumeUp,
-  faCalculator,
 } from "@fortawesome/free-solid-svg-icons";
 
 const Player = ({
@@ -46,8 +45,12 @@ const Player = ({
       audioRef.current.pause();
       setIsPlaying(!isPlaying);
     } else {
-      audioRef.current.play();
-      setIsPlaying(!isPlaying);
+      try {
+        audioRef.current.play();
+        setIsPlaying(!isPlaying);
+      } catch (err) {
+        console.log("playback Prevented");
+      }
     }
   };
 
@@ -65,7 +68,8 @@ const Player = ({
     setSongInfo({ ...songInfo, currentTime: e.target.value });
   };
 
-  let volumeLevel = 0;
+  //this is for the animation on the volume
+  let volumeLevel = 0.5;
   const volumeLevelHandler = (e) => {
     audioRef.current.volume = e.target.value / 100;
     volumeLevel = e.target.value;
@@ -92,13 +96,39 @@ const Player = ({
       if ((currentIndex - 1) % songs.length === -1) {
         await setCurrentSong(songs[songs.length - 1]);
         activeLibraryHandler(songs[songs.length - 1]);
-        if (isPlaying) audioRef.current.play();
+        if (isPlaying) {
+          let playPromise = audioRef.current.play();
+
+          if (playPromise !== undefined) {
+            playPromise
+              .then((_) => {
+                //audio playback begins
+              })
+              .catch((error) => {
+                console.error(error);
+              });
+          }
+        }
         return;
       }
       await setCurrentSong(songs[(currentIndex - 1) % songs.length]);
       activeLibraryHandler(songs[(currentIndex - 1) % songs.length]);
     }
-    if (isPlaying) audioRef.current.play();
+    if (isPlaying) {
+      let playPromise = audioRef.current.play();
+
+      if (playPromise !== undefined) {
+        playPromise
+          .then((_) => {
+            //audio playback begins
+          })
+          .catch((error) => {
+            console.log(
+              "Playback has been prevented since song wasn't finished loading. For more infomation contact me at HolmesSoftwareDev@gmail.com"
+            );
+          });
+      }
+    }
   }; //eoskipTrackHandler
 
   //this is for the animation on the time display/track
@@ -120,9 +150,6 @@ const Player = ({
     requestRef.current = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(requestRef.current);
   }, [isPlaying, animationPercent]);
-
-  //this is for the animation on the volume
-  useLayoutEffect(() => {}, [isPlaying]);
 
   //sets the styke for the track
   const [styleTransform, setStyleTransform] = useState({});

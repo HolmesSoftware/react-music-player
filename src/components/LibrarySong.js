@@ -28,9 +28,6 @@ const LibrarySong = ({
     setSongs(newSongs);
   };
 
-  //to play the audio, calls function in util.js
-  if (isPlaying) audioRef.current.play();
-
   return (
     <div
       onClick={songSelectHandler}

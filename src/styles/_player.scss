@@ -98,11 +98,11 @@
   position: absolute;
   top: 0;
   left: 0;
-  transform: translateX(0%);
-  -moz-transform: translateX(0%); /* Firefox 4 */
-  -webkit-transform: translateX(0%); /* Safari and Chrome */
-  -o-transform: translateX(0%); /* Opera */
-  -ms-transform: translateX(0%); /* Explorer 10 */
+  transform: translateX(50%);
+  -moz-transform: translateX(50%); /* Firefox 4 */
+  -webkit-transform: translateX(50%); /* Safari and Chrome */
+  -o-transform: translateX(50%); /* Opera */
+  -ms-transform: translateX(50%); /* Explorer 10 */
   pointer-events: none;
 }
 

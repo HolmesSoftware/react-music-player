@@ -1,9 +1,10 @@
 import React from "react";
-
-const Song = ({ currentSong }) => {
+// https://developers.google.com/web/updates/2017/06/play-request-was-interrupted
+const Song = ({ currentSong, isPlaying }) => {
   return (
     <div className="song-container">
       <img
+        className={isPlaying ? "rotateSong" : ""}
         alt={currentSong.name + " cover image"}
         src={currentSong.cover}
       ></img>
