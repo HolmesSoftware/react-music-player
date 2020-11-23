@@ -6,6 +6,7 @@ import {
   faAngleRight,
   faPause,
   faVolumeUp,
+  faRandom,
 } from "@fortawesome/free-solid-svg-icons";
 
 const Player = ({
@@ -21,6 +22,13 @@ const Player = ({
   animationPercent,
   requestRef,
 }) => {
+  //useStates
+  //sets the styke for the track
+  const [styleTransform, setStyleTransform] = useState({});
+  const [volumeStyleTransform, setVolumeStyleStyleTransform] = useState({});
+  const [shuffleToggle, setShuffleToggle] = useState(false);
+  const [songArray, setSongArray] = useState([0]);
+
   //Event Handlers
   //Changes the active value when changing the song through the song skip buttons.
   const activeLibraryHandler = (nextOrPrev) => {
@@ -91,6 +99,52 @@ const Player = ({
     if (direction === "skip-forward") {
       await setCurrentSong(songs[(currentIndex + 1) % songs.length]);
       activeLibraryHandler(songs[(currentIndex + 1) % songs.length]);
+    } else if (direction === "shuffle-forward") {
+      let exit = false;
+      let currentIndexInNewArray = songArray.indexOf(currentIndex);
+      if (songArray.length !== currentIndexInNewArray + 1) {
+        let nextIndexInNewArray = songArray[currentIndexInNewArray + 1];
+        await setCurrentSong(songs[nextIndexInNewArray]);
+        activeLibraryHandler(songs[nextIndexInNewArray]);
+      } else if (songArray.length === songs.length) {
+        setSongArray((songArray.length = 0));
+        while (!exit) {
+          let nextSong = Math.floor(Math.random() * Math.floor(songs.length));
+          if (!songArray.includes(nextSong)) {
+            await setCurrentSong(songs[nextSong]);
+            activeLibraryHandler(songs[nextSong]);
+            setSongArray([...songArray, nextSong]);
+            exit = true;
+          }
+        }
+      } else {
+        while (!exit) {
+          let nextSong = Math.floor(Math.random() * Math.floor(songs.length));
+          if (!songArray.includes(nextSong)) {
+            await setCurrentSong(songs[nextSong]);
+            activeLibraryHandler(songs[nextSong]);
+            setSongArray([...songArray, nextSong]);
+            exit = true;
+          }
+        }
+      }
+
+      if (isPlaying) {
+        let playPromise = audioRef.current.play();
+
+        if (playPromise !== undefined) {
+          playPromise
+            .then((_) => {
+              //audio playback begins
+            })
+            .catch((error) => {
+              console.log(
+                "Playback has been prevented since song wasn't finished loading. For more infomation contact me at HolmesSoftwareDev@gmail.com"
+              );
+            });
+        }
+      }
+      return;
     } else if (direction === "skip-back") {
       //if we are at index 0 | return is to prevent the setCurrentSong out of the If doesnt run. could add an else to the if and remove the return. same thing.
       if ((currentIndex - 1) % songs.length === -1) {
@@ -113,6 +167,31 @@ const Player = ({
       }
       await setCurrentSong(songs[(currentIndex - 1) % songs.length]);
       activeLibraryHandler(songs[(currentIndex - 1) % songs.length]);
+    } else if (direction === "shuffle-back") {
+      let currentIndexInNewArray = songArray.indexOf(currentIndex);
+      let previousSongIndex = songArray[currentIndexInNewArray - 1];
+      //fix if not checking
+      if (currentIndexInNewArray - 1 !== -1) {
+        await setCurrentSong(songs[previousSongIndex]);
+        activeLibraryHandler(songs[previousSongIndex]);
+        if (isPlaying) {
+          let playPromise = audioRef.current.play();
+
+          if (playPromise !== undefined) {
+            playPromise
+              .then((_) => {
+                //audio playback begins
+              })
+              .catch((error) => {
+                console.log(
+                  "Playback has been prevented since song wasn't finished loading. For more infomation contact me at HolmesSoftwareDev@gmail.com"
+                );
+              });
+          }
+        }
+
+        return;
+      }
     }
     if (isPlaying) {
       let playPromise = audioRef.current.play();
@@ -151,10 +230,6 @@ const Player = ({
     return () => cancelAnimationFrame(requestRef.current);
   }, [isPlaying, animationPercent]);
 
-  //sets the styke for the track
-  const [styleTransform, setStyleTransform] = useState({});
-  const [volumeStyleTransform, setVolumeStyleStyleTransform] = useState({});
-
   return (
     <div className="player">
       <div className="time-control">
@@ -178,7 +253,16 @@ const Player = ({
       </div>
       <div className="play-control">
         <FontAwesomeIcon
-          onClick={() => skipTrackHandler("skip-back")}
+          onClick={() => setShuffleToggle(!shuffleToggle)}
+          size="2x"
+          icon={faRandom}
+        />
+        <FontAwesomeIcon
+          onClick={
+            shuffleToggle
+              ? () => skipTrackHandler("shuffle-back")
+              : () => skipTrackHandler("skip-back")
+          }
           className="skip-back"
           size="2x"
           icon={faAngleLeft}
@@ -191,7 +275,11 @@ const Player = ({
         />
         <FontAwesomeIcon
           className="skip-forward"
-          onClick={() => skipTrackHandler("skip-forward")}
+          onClick={
+            shuffleToggle
+              ? () => skipTrackHandler("shuffle-forward")
+              : () => skipTrackHandler("skip-forward")
+          }
           size="2x"
           icon={faAngleRight}
         />
