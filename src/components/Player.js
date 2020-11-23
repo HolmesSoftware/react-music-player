@@ -253,6 +253,7 @@ const Player = ({
       </div>
       <div className="play-control">
         <FontAwesomeIcon
+          style={{ color: `${shuffleToggle ? currentSong.color[0] : ""}` }}
           onClick={() => setShuffleToggle(!shuffleToggle)}
           size="2x"
           icon={faRandom}
