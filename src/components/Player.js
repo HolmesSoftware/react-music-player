@@ -7,6 +7,7 @@ import {
   faPause,
   faVolumeUp,
   faRandom,
+  faRedoAlt,
 } from "@fortawesome/free-solid-svg-icons";
 
 const Player = ({
@@ -21,6 +22,8 @@ const Player = ({
   setSongs,
   animationPercent,
   requestRef,
+  setRepeatToggle,
+  repeatToggle,
 }) => {
   //useStates
   //sets the styke for the track
@@ -264,17 +267,20 @@ const Player = ({
               ? () => skipTrackHandler("shuffle-back")
               : () => skipTrackHandler("skip-back")
           }
+          onMouseOver={{ color: `${currentSong.color[0]}` }}
           className="skip-back"
           size="2x"
           icon={faAngleLeft}
         />
         <FontAwesomeIcon
+          onMouseOver={{ color: `${currentSong.color[0]}` }}
           onClick={playSongHandler}
           className="play"
           size="2x"
           icon={isPlaying ? faPause : faPlay}
         />
         <FontAwesomeIcon
+          onMouseOver={{ color: `${currentSong.color[0]}` }}
           className="skip-forward"
           onClick={
             shuffleToggle
@@ -283,6 +289,12 @@ const Player = ({
           }
           size="2x"
           icon={faAngleRight}
+        />
+        <FontAwesomeIcon
+          style={{ color: `${repeatToggle ? currentSong.color[0] : ""}` }}
+          onClick={() => setRepeatToggle(!repeatToggle)}
+          size="2x"
+          icon={faRedoAlt}
         />
         <div className="volume-control">
           <div

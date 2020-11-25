@@ -16,6 +16,8 @@ function App() {
   const [currentSong, setCurrentSong] = useState(songs[0]);
   const [isPlaying, setIsPlaying] = useState(false);
   const [animationPercent, setAnimationPercent] = useState(0);
+  const [repeatToggle, setRepeatToggle] = useState(false);
+
   //Set the current song infomation
   const [songInfo, setSongInfo] = useState({
     currentTime: 0,
@@ -43,18 +45,46 @@ function App() {
     });
   };
 
+  const repeatSongHandler = async () => {
+    let currentIndex = songs.findIndex((song) => song.id === currentSong.id);
+    await setCurrentSong(songs[currentIndex]);
+
+    if (isPlaying) {
+      let playPromise = audioRef.current.play();
+
+      if (playPromise !== undefined) {
+        playPromise
+          .then((_) => {
+            //audio playback begins
+          })
+          .catch((error) => {
+            console.log(
+              "Playback has been prevented since song wasn't finished loading. For more infomation contact me at HolmesSoftwareDev@gmail.com"
+            );
+          });
+      }
+    }
+  };
+
   //skip to next song on song end
   const songEndHandler = async () => {
     let currentIndex = songs.findIndex((song) => song.id === currentSong.id);
     await setCurrentSong(songs[(currentIndex + 1) % songs.length]);
 
-    try {
-      if (isPlaying && audioRef.current.play() !== undefined) {
-        audioRef.current.play();
-        setIsPlaying(!isPlaying);
+    if (isPlaying) {
+      let playPromise = audioRef.current.play();
+
+      if (playPromise !== undefined) {
+        playPromise
+          .then((_) => {
+            //audio playback begins
+          })
+          .catch((error) => {
+            console.log(
+              "Playback has been prevented since song wasn't finished loading. For more infomation contact me at HolmesSoftwareDev@gmail.com"
+            );
+          });
       }
-    } catch (err) {
-      console.log("playback Prevented");
     }
   };
 
@@ -74,6 +104,8 @@ function App() {
         setSongs={setSongs}
         animationPercent={animationPercent}
         requestRef={requestRef}
+        repeatToggle={repeatToggle}
+        setRepeatToggle={setRepeatToggle}
       />
       <Library
         songs={songs}
@@ -89,7 +121,7 @@ function App() {
         onLoadedMetadata={timeUpdateHandler}
         ref={audioRef}
         src={currentSong.audio}
-        onEnded={songEndHandler}
+        onEnded={repeatToggle ? repeatSongHandler : songEndHandler}
       ></audio>
     </div>
   );
