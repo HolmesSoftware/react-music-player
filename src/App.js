@@ -44,7 +44,7 @@ function App() {
       duration: duration,
     });
   };
-
+  //for repeating the current song
   const repeatSongHandler = async () => {
     let currentIndex = songs.findIndex((song) => song.id === currentSong.id);
     await setCurrentSong(songs[currentIndex]);
@@ -81,7 +81,7 @@ function App() {
           })
           .catch((error) => {
             console.log(
-              "Playback has been prevented since song wasn't finished loading. For more infomation contact me at HolmesSoftwareDev@gmail.com"
+              "Playback has been prevented since song wasn't finished loading."
             );
           });
       }
