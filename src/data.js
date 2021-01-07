@@ -1,5 +1,4 @@
 import { v4 as uuidv4 } from "uuid";
-//add songs from the Wintermix chair dance volume 11 for the new songs. Need to add lots to prevent bugs with shuffle.
 function chillHop() {
   return [
     {
